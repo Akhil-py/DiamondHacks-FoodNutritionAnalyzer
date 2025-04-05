@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Healthy Choice Finder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: #f7fafc;
+      margin: 0;
+      padding: 40px 20px;
+      max-width: 1000px;
+      margin: auto;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #6b46c1;
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+    p {
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 30px auto;
+      font-size: 17px;
+      color: #555;
+    }
+    #searchSection {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+    #searchInput {
+      padding: 12px 18px;
+      font-size: 16px;
+      width: 60%;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      outline: none;
+      transition: all 0.2s;
+    }
+    #searchInput:focus {
+      border-color: #805ad5;
+      box-shadow: 0 0 0 3px rgba(128,90,213,0.2);
+    }
+    button {
+      padding: 12px 24px;
+      margin-left: 12px;
+      font-size: 16px;
+      border-radius: 12px;
+      background-color: #b794f4;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background-color: #9f7aea;
+    }
+    h2 {
+      margin-top: 40px;
+      font-size: 22px;
+      color: #4a5568;
+    }
+    .card {
+      background-color: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.06);
+      margin: 16px 0;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      gap: 16px;
+    }
+    .card:hover {
+      transform: scale(1.01);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+    .card img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+    .card-info {
+      flex: 1;
+    }
+    .nutri, .rating {
+      font-weight: bold;
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 14px;
+      margin-top: 6px;
+    }
+    .nutri.A { background: #c6f6d5; color: #22543d; }
+    .nutri.B { background: #fefcbf; color: #744210; }
+    .nutri.C { background: #fbd38d; color: #7b341e; }
+    .nutri.D { background: #feb2b2; color: #822727; }
+    .nutri.E { background: #fc8181; color: #63171b; }
+    .rating {
+      background: #bee3f8;
+      color: #2a4365;
+    }
+    .ai-suggestion {
+      margin-top: 10px;
+      font-style: italic;
+      color: #666;
+    }
+    .amazon-link {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 6px 14px;
+      background-color: #f6ad55;
+      color: white;
+      font-weight: 600;
+      border-radius: 8px;
+      text-decoration: none;
+    }
+    .amazon-link:hover {
+      background-color: #dd6b20;
+    }
+    #results {
+      animation: fadeIn 0.6s ease-in;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <h1>🌿 Healthy Choice Finder</h1>
+  <p>Search food and cosmetic products in one place. Powered by smart insights 🍎💄</p>
+
+  <div id="searchSection">
+    <input type="text" id="searchInput" placeholder="Type here...">
+    <button onclick="search()">Search</button>
+  </div>
+
+  <div id="results"></div>
+
+  <script>
+  function search() {
+    const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+    const results = document.getElementById('results');
+    results.innerHTML = '';
+
+    if (!keyword) {
+      alert("Please enter a keyword");
+      return;
+    }
+
+    const foodData = [
+      { name: "Oat Cereal", brand: "HealthyCo", score: "A", suggestion: "Full of fiber, light on sugar.", image: "https://via.placeholder.com/100", link: "https://www.amazon.com" },
+      { name: "Chocolate Bar", brand: "SweetLife", score: "D", suggestion: "High sugar content.", image: "https://via.placeholder.com/100", link: "https://www.amazon.com" }
+    ];
+
+    const cosmeticData = [
+      { name: "Gentle Face Wash", brand: "SoftSkin", rating: "Low Risk", suggestion: "No harsh chemicals.", image: "https://via.placeholder.com/100", link: "https://www.amazon.com" },
+      { name: "Milk Cleanser", brand: "SkinPure", rating: "Low Risk", suggestion: "Gentle for sensitive skin.", image: "https://via.placeholder.com/100", link: "https://www.amazon.com" }
+    ];
+
+    const matchedFood = foodData.filter(item => item.name.toLowerCase().includes(keyword));
+    const matchedCosmetics = cosmeticData.filter(item => item.name.toLowerCase().includes(keyword));
+
+    if (matchedFood.length) {
+      const foodHeader = document.createElement('h2');
+      foodHeader.textContent = "🥗 Food Results";
+      results.appendChild(foodHeader);
+      matchedFood.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="${item.image}" alt="${item.name}" />
+          <div class="card-info">
+            <h3>${item.name}</h3>
+            <p><strong>Brand:</strong> ${item.brand}</p>
+            <span class="nutri ${item.score}">Nutri-Score: ${item.score}</span>
+            <p class="ai-suggestion">${item.suggestion}</p>
+            <a href="${item.link}" class="amazon-link" target="_blank">View on Amazon</a>
+          </div>
+        `;
+        results.appendChild(card);
+      });
+    }
+
+    if (matchedCosmetics.length) {
+      const cosHeader = document.createElement('h2');
+      cosHeader.textContent = "🧴 Cosmetic Results";
+      results.appendChild(cosHeader);
+      matchedCosmetics.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="${item.image}" alt="${item.name}" />
+          <div class="card-info">
+            <h3>${item.name}</h3>
+            <p><strong>Brand:</strong> ${item.brand}</p>
+            <span class="rating">${item.rating}</span>
+            <p class="ai-suggestion">${item.suggestion}</p>
+            <a href="${item.link}" class="amazon-link" target="_blank">View on Amazon</a>
+          </div>
+        `;
+        results.appendChild(card);
+      });
+    }
+
+    if (!matchedFood.length && !matchedCosmetics.length) {
+      results.innerHTML = '<p style="text-align:center; color:#999;">No results found.</p>';
+    }
+  }
+  </script>
+</body>
+</html>
