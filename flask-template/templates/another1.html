@@ -136,11 +136,29 @@
   <p>Search food and cosmetic products in one place. Powered by smart insights 🍎💄</p>
 
   <div id="searchSection">
-    <input type="text" id="searchInput" placeholder="Type here...">
-    <button onclick="search()">Search</button>
+    <form method="POST" action="/search">
+      <input type="text" id="searchInput" name="query" placeholder="Type here..." value="{{ query if query else '' }}">
+      <button type="submit">Search</button>
+    </form>
   </div>
 
-  <div id="results"></div>
+  <div id="results">
+    {% if results %}
+      <h2>Search Results</h2>
+      {% for item in results %}
+        <div class="card">
+          <div class="card-info">
+            <h3>{{ item.product_name }}</h3>
+            <p><strong>Brand:</strong> {{ item.brand }}</p>
+            <span class="nutri">Nutrition Grade: {{ item.nutrition_grade }}</span>
+            <a href="{{ item.amazon_link }}" class="amazon-link" target="_blank">View on Amazon</a>
+          </div>
+        </div>
+      {% endfor %}
+    {% elif query %}
+      <p style="text-align:center; color:#999;">No results found for "{{ query }}".</p>
+    {% endif %}
+  </div>
 
   <script>
   function search() {

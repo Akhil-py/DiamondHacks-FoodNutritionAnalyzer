@@ -7,7 +7,7 @@
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
-from os import sched_setparam
+#from os import sched_setparam
 
 from scrapingbee import ScrapingBeeClient
 
