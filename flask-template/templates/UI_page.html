@@ -59,6 +59,30 @@
     .nutri.E { color: red; font-weight: bold; }
     .rating { font-weight: bold; }
     .ai-suggestion { font-style: italic; color: #777; }
+    .choose-button {
+      display: inline-block;
+      background-color: #80deea;
+      padding: 8px 16px;
+      border-radius: 12px;
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
+      margin-top: 12px;
+      cursor: pointer;
+    }
+    .see-chosen {
+      text-align: center;
+      margin-top: 30px;
+    }
+    .see-chosen button {
+      background-color: #ff7e93;
+      padding: 10px 20px;
+      border-radius: 20px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
@@ -67,7 +91,7 @@
 </head>
 <body>
   <h1>🌟 Healthy Choice Finder</h1>
-  <p>One search, double the power: discover both food nutrition and cosmetic safety with one click! 🍏💄</p>
+  <p>One search, double the power: discover both food nutrition and cosmetic safety with one click!</p>
 
   <div id="searchSection">
     <input type="text" id="searchInput" placeholder="Search food or cosmetics...">
@@ -76,17 +100,77 @@
 
   <div id="results"></div>
 
+  <div class="see-chosen">
+    <button onclick="seeChosen()">See Chosen</button>
+  </div>
+
   <script>
-  function search() {
-    const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
-    const results = document.getElementById('results');
-    results.innerHTML = '';
+    let chosenItems = JSON.parse(localStorage.getItem('chosenItems')) || [];
+
+    function search() {
+      const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+      const results = document.getElementById('results');
+      results.innerHTML = '';
 
     if (!keyword) {
       alert("Please enter a keyword");
       return;
     }
 
+  //   fetch(`/search?query=${keyword}`)
+  //     .then(response => response.json())
+  //     .then(data => {
+  //       if (data.error) {
+  //         alert(data.error);
+  //         return;
+  //       }
+
+  //       // Process product data from API
+  //       data.forEach((item, index) => {
+  //         const card = document.createElement('div');
+  //         card.className = 'card';
+  //         card.style.animationDelay = `${index * 0.1}s`;
+  //         card.innerHTML = `
+  //           <h3>${item.product_name}</h3>
+  //           <p><strong>Brand:</strong> ${item.brand}</p>
+  //           <p class="nutri ${getNutriClass(item.nutrition_grade)}">Nutri-Score: ${item.nutrition_grade}</p>
+  //           <p class="ai-suggestion">Amazon Link: <a href="${item.amazon_link}" target="_blank">${item.amazon_link}</a></p>
+  //           <button onclick="chooseItem(${JSON.stringify(item)})" class="choose-button">Choose</button>
+  //         `;
+  //         results.appendChild(card);
+  //       });
+
+  //       if (data.length === 0) {
+  //         results.innerHTML = '<p style="text-align:center; color:#999;">No results found.</p>';
+  //       }
+  //     })
+  //     .catch(error => {
+  //       console.error('Error fetching data:', error);
+  //       alert('An error occurred. Please try again later.');
+  //     });
+  // }
+
+  // function getNutriClass(nutritionGrade) {
+  //   switch (nutritionGrade) {
+  //     case 5: return 'A';
+  //     case 4: return 'B';
+  //     case 3: return 'C';
+  //     case 2: return 'D';
+  //     case 1: return 'E';
+  //     default: return '';
+  //   }
+  // }
+
+  // function chooseItem(item) {
+  //   console.log("Item chosen:", item);
+  //   chosenItems.push(item);
+  //   localStorage.setItem('chosenItems', JSON.stringify(chosenItems));
+  //   console.log("Chosen items in localStorage:", localStorage.getItem('chosenItems'));
+  // }
+
+  // function seeChosen() {
+  //   window.location.href = 'chosenItems.html';
+  // }
     const foodData = [
       { name: "Oat Cereal", brand: "HealthyCo", score: "A", suggestion: "Full of fiber, light on sugar." },
       { name: "Chocolate Bar", brand: "SweetLife", score: "D", suggestion: "High sugar content." },
@@ -117,6 +201,7 @@
           <p><strong>Brand:</strong> ${item.brand}</p>
           <p class="nutri ${item.score}">Nutri-Score: ${item.score}</p>
           <p class="ai-suggestion">${item.suggestion}</p>
+          <button onclick="chooseItem(${JSON.stringify(item)})" class="choose-button">Choose</button>
         `;
         results.appendChild(card);
       });
@@ -135,6 +220,7 @@
           <p><strong>Brand:</strong> ${item.brand}</p>
           <p class="rating">Rating: ${item.rating}</p>
           <p class="ai-suggestion">${item.suggestion}</p>
+          <button onclick="chooseItem(${JSON.stringify(item)})" class="choose-button">Choose</button>
         `;
         results.appendChild(card);
       });
@@ -144,6 +230,17 @@
       results.innerHTML = '<p style="text-align:center; color:#999;">No results found.</p>';
     }
   }
+
+    function chooseItem(item) {
+      console.log("Item chosen:", item);
+      chosenItems.push(item);
+      localStorage.setItem('chosenItems', JSON.stringify(chosenItems));
+      console.log("Chosen items in localStorage:", localStorage.getItem('chosenItems'));
+    }
+
+    function seeChosen() {
+      window.location.href = 'chosenItems.html';
+    }
   </script>
 </body>
 </html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Chosen Items</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: linear-gradient(to bottom right, #fef6f9, #f0fff8);
+      margin: 0;
+      padding: 20px;
+      max-width: 1000px;
+      margin: auto;
+      color: #444;
+    }
+    h1 {
+      text-align: center;
+      color: #ff7e93;
+      font-size: 28px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .done-button {
+      display: block;
+      margin: 30px auto;
+      background-color: #ff7e93;
+      color: white;
+      font-weight: bold;
+      padding: 12px 24px;
+      border-radius: 20px;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Your Chosen Items</h1>
+  <div id="chosenItems"></div>
+  <button class="done-button" onclick="goToAmazon()">Done</button>
+
+  <script>
+    window.onload = function() {
+      let chosenItems = JSON.parse(localStorage.getItem('chosenItems')) || [];
+
+      // Remove duplicates based on name + brand
+      chosenItems = chosenItems.filter((item, index, self) =>
+        index === self.findIndex(i => i.name === item.name && i.brand === item.brand)
+      );
+
+      const chosenItemsContainer = document.getElementById('chosenItems');
+
+      if (chosenItems.length === 0) {
+        chosenItemsContainer.innerHTML = "<p>No items chosen yet!</p>";
+      } else {
+        chosenItems.forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.innerHTML = `
+            <h3>${item.name}</h3>
+            <p><strong>Brand:</strong> ${item.brand}</p>
+            <p>${item.score ? 'Nutri-Score: ' + item.score : 'Rating: ' + item.rating}</p>
+            <p>${item.suggestion}</p>
+          `;
+          chosenItemsContainer.appendChild(card);
+        });
+      }
+    };
+
+    function goToAmazon() {
+      const rawItems = JSON.parse(localStorage.getItem('chosenItems')) || [];
+      const uniqueItems = rawItems.filter((item, index, self) =>
+        index === self.findIndex(i => i.name === item.name && i.brand === item.brand)
+      );
+      if (uniqueItems.length === 0) {
+        alert("No items to search on Amazon.");
+        return;
+      }
+      const keywords = uniqueItems.map(i => i.name).join("+").replace(/\s+/g, "+");
+      const amazonURL = `https://www.amazon.com/s?k=${keywords}`;
+      window.open(amazonURL, '_blank');
+    }
+  </script>
+</body>
+</html>
