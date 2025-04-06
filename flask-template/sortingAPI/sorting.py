@@ -8,8 +8,13 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 #from os import sched_setparam
+import sys
 
 from scrapingbee import ScrapingBeeClient
+
+sys.path.append("../Gemini")
+from Gemini.DescriptionAnalysis import generate_health_blurb
+
 
 def scrape(product, brand, found):
     api_key ='ROEG0293KVWCCSIRM3KYDSUTXPY95BVTDR2NSAIDN3JRXIILA4S0IDFTPXNTKGGWDMUFTRWV1LXDDYXI'
@@ -112,7 +117,7 @@ def search(search_term):
     if response.status_code == 200:
         data = response.json()
         if 'products' not in data:
-          return
+            return
         if len(data["products"]) > 0:
             for product in data["products"]:
                 nutrition_grade = product.get("nutrition_grades")
@@ -123,43 +128,35 @@ def search(search_term):
                     product_info = {
                         "product_name": product.get("product_name"),
                         "brand": product.get("brands"),
-                        "nutrition_grade": grade
+                        "nutrition_grade": grade,
+                        "description": product.get("ingredients_text", "No description available")
                     }
                     products_list.append(product_info)
         else:
             print("No products found for your search term.")
     else:
         print(f"Error: {response.status_code}")
+
     # Sort the products by nutrition grade (from 5 to 1)
     sorted_products = sorted(products_list, key=lambda x: x["nutrition_grade"], reverse=True)
     top_20_products = sorted_products[:20]
-    # Display sorted products
+
     retList = []
     if top_20_products:
-        # print("Sorted Products:")
         for product in top_20_products:
-          if(scrape(product['product_name'], product['brand'], True) != "No links found on Amazon search page"):
-            retVals ={
-                "product_name": product['product_name'],
-                "brand": product['brand'],
-                "nutrition_grade": product['nutrition_grade'],
-                "amazon_link": scrape(product['product_name'], product['brand'], True)
-            }
-            retList.append(retVals)
-            # print(f"Product Name: {product['product_name']}")
-            # print(f"Brand: {product['brand']}")
-            # print(f"Nutrition Grade: {product['nutrition_grade']}")
-            # scrape(product['product_name'], product['brand'], True)
-          # print(f"Product Name: {product['product_name']}")
-          # print(f"Brand: {product['brand']}")
-          # print(f"Nutrition Grade: {product['nutrition_grade']}")
-          # scrape(product['product_name'], product['brand'], True)
-          # print()
+            amazon_link = scrape(product['product_name'], product['brand'], True)
+            if amazon_link != "No links found on Amazon search page":
+                # Generate health blurb using Gemini
+                health_blurb = generate_health_blurb(product['product_name'], product['description'])
+                retVals = {
+                    "product_name": product['product_name'],
+                    "brand": product['brand'],
+                    "nutrition_grade": product['nutrition_grade'],
+                    "amazon_link": amazon_link,
+                    "health_blurb": health_blurb
+                }
+                retList.append(retVals)
     else:
-
         print("No products found for your search term.")
         scrape(search_term, "none", False)
     return retList
-
-#search_term = input("What are you looking for: ")
-#search(search_term)

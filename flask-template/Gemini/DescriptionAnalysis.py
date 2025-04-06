@@ -34,3 +34,13 @@ list = client.models.generate_content(
 #print(f"Healthiness Rank: {rank}")
 #print(analysis.text)
 print(list.text)
+
+
+
+def generate_health_blurb(product_name, description):
+    """Generate a healthiness blurb using Gemini."""
+    instructions = f"Analyze the product '{product_name}' with the following description: '{description}'. Provide a single line explanation of why it is healthy or unhealthy, focusing on its ingredients and nutritional value. Make sure to not have any formatting in the response."
+    response = client.models.generate_content(
+        model="gemini-2.0-flash", contents=instructions
+    )
+    return response.text.strip()
