@@ -39,8 +39,12 @@ def scrape(product, brand, found):
 
     links = soup.find_all('a', attrs = {'class': 'a-link-normal s-no-outline'})
 
+    if not links:
+        print("No links found on Amazon search page")
+        return []
+    
     if found: 
-        print("https://www.amazon.com" + links[0].get('href'))
+        # print("https://www.amazon.com" + links[0].get('href'))
         return "https://www.amazon.com" + links[0].get('href')
     else: 
         product_list = ["https://www.amazon.com" + link.get('href') for link in links[:20] if link.get('href')]
