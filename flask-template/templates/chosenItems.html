@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Chosen Items</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: linear-gradient(to bottom right, #fef6f9, #f0fff8);
+      margin: 0;
+      padding: 20px;
+      max-width: 1000px;
+      margin: auto;
+      color: #444;
+    }
+    h1 {
+      text-align: center;
+      color: #ff7e93;
+      font-size: 28px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Your Chosen Items</h1>
+  <div id="chosenItems"></div>
+
+  <script>
+    window.onload = function() {
+      const chosenItems = JSON.parse(localStorage.getItem('chosenItems')) || [];  // Get items from localStorage
+      const chosenItemsContainer = document.getElementById('chosenItems');
+
+      if (chosenItems.length === 0) {
+        chosenItemsContainer.innerHTML = "<p>No items chosen yet!</p>";
+      } else {
+        chosenItems.forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.innerHTML = `
+            <h3>${item.name}</h3>
+            <p><strong>Brand:</strong> ${item.brand}</p>
+            <p>${item.score ? 'Nutri-Score: ' + item.score : 'Rating: ' + item.rating}</p>
+            <p>${item.suggestion}</p>
+          `;
+          chosenItemsContainer.appendChild(card);
+        });
+      }
+    };
+  </script>
+</body>
+</html>
