@@ -161,5 +161,5 @@ def search(search_term):
         scrape(search_term, "none", False)
     return retList
 
-search_term = input("What are you looking for: ")
-search(search_term)
+#search_term = input("What are you looking for: ")
+#search(search_term)
