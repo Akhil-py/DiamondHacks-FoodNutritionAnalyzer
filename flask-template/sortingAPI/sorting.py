@@ -48,13 +48,12 @@ def search(search_term):
             print(f"Product Name: {product['product_name']}")
             print(f"Brand: {product['brand']}")
             print(f"Nutrition Grade: {product['nutrition_grade']}")
+            scrape(product['product_name'], product['brand'], True)
             print()
     else:
+        
         print("No products found for your search term.")
-    if len(top_20_products) > 5:
-      return top_20_products
-    else:
-      return 0
-
+        scrape(search_term, "none", False)
+        
 search_term = input("What are you looking for: ")
 search(search_term)
