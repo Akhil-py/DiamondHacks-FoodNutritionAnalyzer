@@ -59,6 +59,30 @@
     .nutri.E { color: red; font-weight: bold; }
     .rating { font-weight: bold; }
     .ai-suggestion { font-style: italic; color: #777; }
+    .choose-button {
+      display: inline-block;
+      background-color: #80deea;
+      padding: 8px 16px;
+      border-radius: 12px;
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
+      margin-top: 12px;
+      cursor: pointer;
+    }
+    .see-chosen {
+      text-align: center;
+      margin-top: 30px;
+    }
+    .see-chosen button {
+      background-color: #ff7e93;
+      padding: 10px 20px;
+      border-radius: 20px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
@@ -76,11 +100,17 @@
 
   <div id="results"></div>
 
+  <div class="see-chosen">
+    <button onclick="seeChosen()">See Chosen</button>
+  </div>
+
   <script>
-  function search() {
-    const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
-    const results = document.getElementById('results');
-    results.innerHTML = '';
+    let chosenItems = JSON.parse(localStorage.getItem('chosenItems')) || [];
+
+    function search() {
+      const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+      const results = document.getElementById('results');
+      results.innerHTML = '';
 
     if (!keyword) {
       alert("Please enter a keyword");
@@ -117,6 +147,7 @@
           <p><strong>Brand:</strong> ${item.brand}</p>
           <p class="nutri ${item.score}">Nutri-Score: ${item.score}</p>
           <p class="ai-suggestion">${item.suggestion}</p>
+          <button onclick="chooseItem(${JSON.stringify(item)})" class="choose-button">Choose</button>
         `;
         results.appendChild(card);
       });
@@ -135,6 +166,7 @@
           <p><strong>Brand:</strong> ${item.brand}</p>
           <p class="rating">Rating: ${item.rating}</p>
           <p class="ai-suggestion">${item.suggestion}</p>
+          <button onclick="chooseItem(${JSON.stringify(item)})" class="choose-button">Choose</button>
         `;
         results.appendChild(card);
       });
@@ -144,6 +176,17 @@
       results.innerHTML = '<p style="text-align:center; color:#999;">No results found.</p>';
     }
   }
+
+    function chooseItem(item) {
+      console.log("Item chosen:", item);
+      chosenItems.push(item);
+      localStorage.setItem('chosenItems', JSON.stringify(chosenItems));
+      console.log("Chosen items in localStorage:", localStorage.getItem('chosenItems'));
+    }
+
+    function seeChosen() {
+      window.location.href = 'chosenItems.html';
+    }
   </script>
 </body>
 </html>
